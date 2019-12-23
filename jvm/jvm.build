@@ -28,7 +28,7 @@
         <property name="VERSION" value="${assemblyname::get-version(assemblyname::get-assembly-name(path::combine(project::get-base-directory(), '../bin/IKVM.Runtime.dll')))}" />
     </target>
     <target name="implib">
-        <csc target="exe" output="../tools/implib.exe" rebuild="true">
+        <csc target="exe" output="../tools/implib.exe" rebuild="true" debug="${debug}">
             <sources>
                 <include name="../tools/implib.cs" />
             </sources>

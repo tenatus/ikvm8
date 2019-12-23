@@ -24,7 +24,7 @@
 -->
 <project name="msbuild" default="msbuild">
     <target name="msbuild">
-        <csc target="library" output="../bin/IKVM.MSBuild.dll">
+        <csc target="library" output="../bin/IKVM.MSBuild.dll" debug="${debug}">
             <sources>
                 <include name="AssemblyInfo.cs" />
                 <include name="JavaTask.cs" />

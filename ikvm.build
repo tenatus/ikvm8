@@ -33,6 +33,7 @@
          <call target="managed" />
     </target>
     <target name="managed" depends="clean-managed CommonAssemblyInfo">
+        <property name="debug" value="true" overwrite="false" />
         <nant buildfile="tools/tools.build" />
         <nant buildfile="reflect/reflect.build" />
         <nant buildfile="ikvmstub/ikvmstub.build" />

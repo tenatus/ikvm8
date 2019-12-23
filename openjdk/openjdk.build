@@ -63,7 +63,7 @@
         <delete file="System.Core.dll" />
         <if test="${version::get-major(framework::get-version(framework::get-target-framework() )) &lt; 4}">
             <copy file="../bin/IKVM.Reflection.dll" todir="." overwrite="true" />
-            <csc target="exe" output="GenerateSystemCore.exe">
+            <csc target="exe" output="GenerateSystemCore.exe" debug="${debug}">
                 <sources>
                     <include name="GenerateSystemCore.cs" />
                 </sources>
@@ -348,6 +348,7 @@
         <copy file="../bin/IKVM.Runtime.dll" todir="." />
         <copy file="../bin/IKVM.AWT.WinForms.dll" todir="." />
         <exec program="${project::get-base-directory()}/../bin/ikvmc.exe" useruntimeengine="true">
+            <arg value="-debug" />
             <arg value="-version:${VERSION}" />
             <arg value="${signoption}" />
             <arg value="-compressresources" />
@@ -401,6 +402,13 @@
                 <include name="IKVM.OpenJDK.*.dll" />
             </fileset>
         </copy>
+        <if test="${debug}">
+            <copy todir="../bin">
+                <fileset basedir=".">
+                    <include name="IKVM.OpenJDK.*.pdb" />
+                </fileset>
+            </copy>
+        </if>
         <!-- update base addresses in response.txt for next build -->
         <exec program="${project::get-base-directory()}/../tools/updbaseaddresses.exe" commandline="response.txt" useruntimeengine="true" />
 
@@ -427,6 +435,7 @@
 
     <target name="tools" depends="version tools.gen.rsp">
         <exec program="${project::get-base-directory()}/../bin/ikvmc.exe" useruntimeengine="true">
+            <arg value="-debug" />
             <arg value="-r:mscorlib.dll" />
             <arg value="-version:${VERSION}" />
             <arg value="${signoption}" />
@@ -439,24 +448,28 @@
 
     <target name="jdk-tools" depends="version">
         <exec program="${project::get-base-directory()}/../bin/ikvmc.exe" useruntimeengine="true">
+            <arg value="-debug" />
             <arg value="-version:${VERSION}" />
             <arg value="-out:../bin/javac.exe" />
             <arg value="-main:com.sun.tools.javac.Main" />
             <arg value="-r:../bin/IKVM.OpenJDK.Tools.dll" />
         </exec>
         <exec program="${project::get-base-directory()}/../bin/ikvmc.exe" useruntimeengine="true">
+            <arg value="-debug" />
             <arg value="-version:${VERSION}" />
             <arg value="-out:../bin/javah.exe" />
             <arg value="-main:com.sun.tools.javah.Main" />
             <arg value="-r:../bin/IKVM.OpenJDK.Tools.dll" />
         </exec>
         <exec program="${project::get-base-directory()}/../bin/ikvmc.exe" useruntimeengine="true">
+            <arg value="-debug" />
             <arg value="-version:${VERSION}" />
             <arg value="-out:../bin/javap.exe" />
             <arg value="-main:com.sun.tools.javap.Main" />
             <arg value="-r:../bin/IKVM.OpenJDK.Tools.dll" />
         </exec>
         <exec program="${project::get-base-directory()}/../bin/ikvmc.exe" useruntimeengine="true">
+            <arg value="-debug" />
             <arg value="-version:${VERSION}" />
             <arg value="-out:../bin/jjs.exe" />
             <arg value="-main:jdk.nashorn.tools.Shell" />

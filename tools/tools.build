@@ -24,13 +24,13 @@
 -->
 <project name="tools" default="tools">
     <target name="tools">
-        <csc target="exe" output="updbaseaddresses.exe" optimize="true">
+        <csc target="exe" output="updbaseaddresses.exe" optimize="true" debug="${debug}">
             <sources>
                 <include name="updbaseaddresses.cs" />
             </sources>
         </csc>
 
-        <csc target="exe" output="depcheck.exe" optimize="true">
+        <csc target="exe" output="depcheck.exe" optimize="true" debug="${debug}">
             <sources>
                 <include name="depcheck.cs" />
             </sources>
@@ -40,7 +40,7 @@
             <property name="defs" value="${signed}" />
         </if>
         <property overwrite="false" name="defs" value="" />
-        <csc target="exe" output="pubkey.exe" define="${defs}" optimize="true" rebuild="true">
+        <csc target="exe" output="pubkey.exe" define="${defs}" optimize="true" rebuild="true" debug="${debug}">
             <sources>
                 <include name="pubkey.cs" />
                 <include name="../CommonAssemblyInfo.cs" />
@@ -48,14 +48,14 @@
         </csc>
         <exec program="pubkey.exe" useruntimeengine="true" />
 
-        <csc target="exe" output="writeappconfig.exe" rebuild="true">
+        <csc target="exe" output="writeappconfig.exe" rebuild="true" debug="${debug}">
             <sources>
                 <include name="writeappconfig.cs" />
             </sources>
         </csc>
         <exec program="writeappconfig.exe" useruntimeengine="true" />
 
-        <csc target="exe" output="SourceLicenseAnalyzer.exe" rebuild="true">
+        <csc target="exe" output="SourceLicenseAnalyzer.exe" rebuild="true" debug="${debug}">
             <sources>
                 <include name="SourceLicenseAnalyzer.cs" />
             </sources>

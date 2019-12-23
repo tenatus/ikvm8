@@ -30,7 +30,7 @@
         <if test="${property::exists('signed')}">
             <property name="defs" value="${defs};${signed}" />
         </if>
-        <csc target="exe" output="../bin/ikvmstub.exe" define="${defs}" noconfig="true" nostdlib="true">
+        <csc target="exe" output="../bin/ikvmstub.exe" define="${defs}" noconfig="true" nostdlib="true" debug="${debug}">
             <sources>
                 <include name="../CommonAssemblyInfo.cs" />
                 <include name="../ikvmc/AssemblyResolver.cs" />
