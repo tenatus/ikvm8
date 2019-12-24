@@ -283,8 +283,12 @@ namespace IKVM.NativeCode.sun.awt.shell
                     DeleteObject(hIcon);
                     Bitmap bitmap = new Bitmap(iconSize, iconSize, PixelFormat.Format32bppArgb);
                     BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, iconSize, iconSize), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-                    Marshal.Copy(iconBits, 0, bitmapData.Scan0, iconBits.Length);
-                    bitmap.UnlockBits(bitmapData);
+                    try {
+                        Marshal.Copy(iconBits, 0, bitmapData.Scan0, iconBits.Length);
+                    }
+                    finally {
+                        bitmap.UnlockBits(bitmapData);
+                    }
                     return bitmap;
 				}
 			}

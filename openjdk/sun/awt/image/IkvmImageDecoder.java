@@ -125,9 +125,13 @@ abstract class IkvmImageDecoder extends ImageDecoder {
             
             cli.System.Drawing.Rectangle rect = new cli.System.Drawing.Rectangle(0, 0, width, height);
             cli.System.Drawing.Imaging.BitmapData data = bitmap.LockBits(rect, ImageLockMode.wrap(ImageLockMode.ReadOnly), PixelFormat.wrap(PixelFormat.Format32bppArgb));
-            cli.System.IntPtr pixelPtr = data.get_Scan0();
-            cli.System.Runtime.InteropServices.Marshal.Copy(pixelPtr, pixelData, 0, size);        
-            bitmap.UnlockBits(data);
+            try {
+                cli.System.IntPtr pixelPtr = data.get_Scan0();
+                cli.System.Runtime.InteropServices.Marshal.Copy(pixelPtr, pixelData, 0, size);        
+            }
+            finally {
+                bitmap.UnlockBits(data);
+            }
             
             //source.
             

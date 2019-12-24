@@ -743,9 +743,13 @@ public class BufferedImage extends java.awt.Image
         }
         cli.System.Drawing.Rectangle rect = new cli.System.Drawing.Rectangle(0, 0, width, height);
         cli.System.Drawing.Imaging.BitmapData data = bitmap.LockBits(rect, ImageLockMode.wrap(ImageLockMode.WriteOnly), PixelFormat.wrap(PixelFormat.Format32bppArgb));
-        cli.System.IntPtr pixelPtr = data.get_Scan0();
-        cli.System.Runtime.InteropServices.Marshal.Copy(pixelData, 0, pixelPtr, (int)size);
-        bitmap.UnlockBits(data);
+        try {
+            cli.System.IntPtr pixelPtr = data.get_Scan0();
+            cli.System.Runtime.InteropServices.Marshal.Copy(pixelData, 0, pixelPtr, (int)size);
+        }
+        finally {
+            bitmap.UnlockBits(data);
+        }
     }
 
     /**
@@ -753,19 +757,19 @@ public class BufferedImage extends java.awt.Image
      * a Java WritableRaster and a .NET Bitmap.
      * This method convert the .NET Bitmap object to Java WritableRaster.
      */
-    private void bitmap2Raster(){
-        if(currentBuffer != BUFFER_BITMAP){
+    private void bitmap2Raster() {
+        if (currentBuffer != BUFFER_BITMAP) {
             return; // BUFFER_BOTH and BUFFER_RASTER
         }
-        synchronized( bitmap ) {
+        synchronized(bitmap) {
             int width = bitmap.get_Width();
             int height = bitmap.get_Height();
-            if(colorModel == null){
+            if (colorModel == null) {
                 colorModel = createColorModel();
             }
-            if(raster == null){
+            if (raster == null) {
                 raster = createRaster(width, height);
-                raster.getDataBuffer().setImage( this );
+                raster.getDataBuffer().setImage(this);
             }
             
             this.currentBuffer = BUFFER_BOTH;
@@ -794,29 +798,35 @@ public class BufferedImage extends java.awt.Image
         }
         cli.System.Drawing.Rectangle rect = new cli.System.Drawing.Rectangle(0, 0, width, height);
         cli.System.Drawing.Imaging.BitmapData data = bitmap.LockBits(rect, ImageLockMode.wrap(ImageLockMode.ReadOnly), PixelFormat.wrap(pixelFormat));
-        cli.System.IntPtr pixelPtr = data.get_Scan0();
-        cli.System.Runtime.InteropServices.Marshal.Copy(pixelPtr, pixelData, 0, (int)size);        
-        bitmap.UnlockBits(data);
+        try {
+            cli.System.IntPtr pixelPtr = data.get_Scan0();
+            cli.System.Runtime.InteropServices.Marshal.Copy(pixelPtr, pixelData, 0, (int)size);        
+        }
+        finally {
+            bitmap.UnlockBits(data);
+        }
     }
 
     @cli.System.Security.SecuritySafeCriticalAttribute.Annotation
-    private static void copyFromBitmap(cli.System.Drawing.Bitmap bitmap, WritableRaster raster, ColorModel colorModel)
-    {
+    private static void copyFromBitmap(cli.System.Drawing.Bitmap bitmap, WritableRaster raster, ColorModel colorModel) {
         int width = bitmap.get_Width();
         int height = bitmap.get_Height();
-        cli.System.Drawing.Rectangle rect = new cli.System.Drawing.Rectangle(0, 0, width, height);
-        cli.System.Drawing.Imaging.BitmapData data = bitmap.LockBits(rect, ImageLockMode.wrap(ImageLockMode.ReadOnly), PixelFormat.wrap(PixelFormat.Format32bppArgb));
-
-        cli.System.IntPtr ptr = data.get_Scan0();
         int size = width * height;
         int[] rgbValues = new int[size];
-        cli.System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, size);
-        bitmap.UnlockBits(data);
+        cli.System.Drawing.Rectangle rect = new cli.System.Drawing.Rectangle(0, 0, width, height);
+        cli.System.Drawing.Imaging.BitmapData data = bitmap.LockBits(rect, ImageLockMode.wrap(ImageLockMode.ReadOnly), PixelFormat.wrap(PixelFormat.Format32bppArgb));
+        try {
+            cli.System.IntPtr ptr = data.get_Scan0();
+            cli.System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, size);
+        }
+        finally {
+            bitmap.UnlockBits(data);
+        }
 
         Object pixel = colorModel.getDataElements(0, null);
-        for(int y = 0; y < height; y++) {
+        for (int y = 0; y < height; y++) {
             int offset = y * width;
-            for(int x = 0; x < width; x++) {
+            for (int x = 0; x < width; x++) {
                 int rgb = rgbValues[offset + x];
                 raster.setDataElements(x, y, colorModel.getDataElements(rgb, pixel));
             }

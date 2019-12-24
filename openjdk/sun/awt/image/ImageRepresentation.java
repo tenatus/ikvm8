@@ -240,16 +240,24 @@ public class ImageRepresentation extends ImageWatched implements ImageConsumer{
 
 	@cli.System.Security.SecurityCriticalAttribute.Annotation
 	private void copyInt(int x, int y, int w, int h, int[] pixels, int off, int pixelFormat ) {
-		BitmapData data = getBitmapRef().LockBits(new cli.System.Drawing.Rectangle(x, y, w, h), ImageLockMode.wrap(ImageLockMode.WriteOnly), PixelFormat.wrap(pixelFormat));
-		cli.System.Runtime.InteropServices.Marshal.Copy(pixels, off, data.get_Scan0(), data.get_Width() * data.get_Height());
-		getBitmapRef().UnlockBits(data);
+        BitmapData data = getBitmapRef().LockBits(new cli.System.Drawing.Rectangle(x, y, w, h), ImageLockMode.wrap(ImageLockMode.WriteOnly), PixelFormat.wrap(pixelFormat));
+        try {
+            cli.System.Runtime.InteropServices.Marshal.Copy(pixels, off, data.get_Scan0(), data.get_Width() * data.get_Height());
+        }
+        finally {
+            getBitmapRef().UnlockBits(data);
+        }
 	}
     
 	@cli.System.Security.SecurityCriticalAttribute.Annotation
 	private void copyByte(int x, int y, int w, int h, byte[] pixels, int off, int pixelFormat, int bpp) {
-		BitmapData data = getBitmapRef().LockBits(new cli.System.Drawing.Rectangle(x, y, w, h), ImageLockMode.wrap(ImageLockMode.WriteOnly), PixelFormat.wrap(pixelFormat));
-		cli.System.Runtime.InteropServices.Marshal.Copy(pixels, off, data.get_Scan0(), pixels.length);
-		getBitmapRef().UnlockBits(data);
+        BitmapData data = getBitmapRef().LockBits(new cli.System.Drawing.Rectangle(x, y, w, h), ImageLockMode.wrap(ImageLockMode.WriteOnly), PixelFormat.wrap(pixelFormat));
+        try {
+            cli.System.Runtime.InteropServices.Marshal.Copy(pixels, off, data.get_Scan0(), pixels.length);
+        }
+        finally {
+            getBitmapRef().UnlockBits(data);
+        }
 	}
     
     
