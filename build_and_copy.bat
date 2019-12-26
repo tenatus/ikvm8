@@ -1,5 +1,7 @@
 call nant signed
-copy bin\* C:\Engineering\RC.Net\APIs\IKVM.WINDWARD.8.5.0.3\lib
+md C:\Engineering\RC.Net\APIs\IKVM
+md C:\Engineering\RC.Net\APIs\IKVM\lib
+copy bin\* C:\Engineering\RC.Net\APIs\IKVM\lib
 copy bin\* C:\Engineering\Binaries\Debug
 
 cd \GitHub\tabula-java\scripts
